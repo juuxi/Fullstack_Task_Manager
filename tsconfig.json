@@ -1,6 +1,6 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
-  "include": ["frontend/*.ts"],
+  "include": ["frontend/src/*.ts"],
   "compilerOptions": {
     // File Layout
     // "rootDir": "./src",
@@ -10,6 +10,8 @@
     // See also https://aka.ms/tsconfig/module
     "module": "esnext",
     "target": "esnext",
+    "outDir": "./frontend/dist/",
+    "rootDir": "./frontend/src/",
     "types": [],
     // For nodejs:
     // "lib": ["esnext"],
