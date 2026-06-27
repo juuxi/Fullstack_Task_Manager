@@ -16,7 +16,7 @@ interface ApiConfig {
     headers?: Record<string, string>;
 }
 
-class ApiClient {
+class ApiTaskClient {
     client: AxiosInstance;
 
     constructor(_config: ApiConfig) {
@@ -38,7 +38,7 @@ class ApiClient {
         }
         return response.data;
     }
-    public async post<T>(url: string, data: Task, params?: Record<string, any>): Promise<T> {
+    public async post<T>(url: string, data: Omit<Task, 'id'>, params?: Record<string, any>): Promise<T> {
         let response;
         try {
             response = await this.client.post<T>(url, data, { params });
@@ -63,10 +63,10 @@ const my_config: ApiConfig = {
     headers: {'Content-Type': 'application/json'},
 }
 
-const client: ApiClient = new ApiClient(my_config);
+const client: ApiTaskClient = new ApiTaskClient(my_config);
 try {
-    await client.post<Task>('/api/tasks/', { id: 9, title: "Clean up", completed: false}); 
-    await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" }); 
+    //await client.post<Task>('/api/tasks/', { id: 9, title: "Clean up", completed: false}); 
+    //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" }); 
     const tasks: Task[] = await client.get<Task[]>('/api/tasks/');
     let header = document.createElement('h3');
     header.innerText = "Tasks fetched";

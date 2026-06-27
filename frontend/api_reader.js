@@ -6,7 +6,7 @@ class ApiError extends Error {
         this.status = status;
     }
 }
-class ApiClient {
+class ApiTaskClient {
     client;
     constructor(_config) {
         const config = {
@@ -51,10 +51,10 @@ const my_config = {
     baseUrl: 'http://localhost:8000',
     headers: { 'Content-Type': 'application/json' },
 };
-const client = new ApiClient(my_config);
+const client = new ApiTaskClient(my_config);
 try {
-    await client.post('/api/tasks/', { id: 9, title: "Clean up", completed: false });
-    await client.patch('/api/tasks/1/', { title: "Do the dishes" });
+    //await client.post<Task>('/api/tasks/', { id: 9, title: "Clean up", completed: false}); 
+    //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" }); 
     const tasks = await client.get('/api/tasks/');
     let header = document.createElement('h3');
     header.innerText = "Tasks fetched";
