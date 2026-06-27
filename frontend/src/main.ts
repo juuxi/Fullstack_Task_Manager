@@ -5,27 +5,51 @@ import type { Task } from './types.js'
 import { TaskList } from './TaskList.js'
 
 
+async function updateTasks(task_list: TaskList) {
+    const tasks: Task[] = await client.get<Task[]>('/api/tasks/');
+    task_list.render(tasks);
+
+    let change_buttons = document.querySelectorAll<HTMLButtonElement>('.change-button');
+    change_buttons.forEach(async button => {
+        button.addEventListener('click', async () => {
+            await client.patch<Task>(`/api/tasks/${button.dataset.index}/`, { title: "Do the dishes" });
+            await updateTasks(task_list);
+        });
+    });
+
+    let delete_buttons = document.querySelectorAll<HTMLButtonElement>('.delete-button');
+    delete_buttons.forEach(async button => {
+        button.addEventListener('click', async () => {
+            await client.delete<Task>(`/api/tasks/${button.dataset.index}/`);
+            await updateTasks(task_list);
+        });
+    });
+}
+
 
 const my_config: ApiConfig = {
     baseUrl: 'http://localhost:8000',
     headers: {'Content-Type': 'application/json'},
 }
 
+
 const client: ApiTaskClient = new ApiTaskClient(my_config);
 try {
-    //await client.post<Task>('/api/tasks/', { title: "Clean up", completed: false });
-    //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" });
-    //await client.put<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
-    //await client.delete<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
-    const tasks: Task[] = await client.get<Task[]>('/api/tasks/');
     let header = document.createElement('h3');
     header.innerText = "Tasks fetched";
     document.querySelector('h1')?.after(header);
     let ul = document.createElement('ul');
     ul.id = 'my_ul';
-    let tl: TaskList = new TaskList('my_ul');
-    tl.render(tasks);
     header.after(ul);
+    let tl: TaskList = new TaskList('my_ul');
+    //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" });
+    //await client.put<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
+    //await client.delete<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
+    let plus_button = document.querySelector('.plus-button') as HTMLButtonElement;
+    plus_button.addEventListener('click', async () => {
+        await client.post<Task>('/api/tasks/', { title: "Clean up", completed: "pending" });
+        await updateTasks(tl);
+    });
 }
 catch (e) {
     if (e instanceof ApiError) {
