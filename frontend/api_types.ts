@@ -15,7 +15,7 @@ interface ApiResponse {
 export interface Task {
     id: number;
     title: string;
-    completed: boolean;
+    completed: ("pending" | "done" | "in-progress");
 }
 
 /* async function fetchUsers(): Promise<ApiResponse> {
