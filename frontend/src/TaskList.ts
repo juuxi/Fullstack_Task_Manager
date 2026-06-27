@@ -14,10 +14,12 @@ export class TaskList {
 
     public render(tasks: Task[]): void {
         this.listElement.innerHTML = tasks
-          .map((task, index) => `
+          .map((task) => `
             <li>
-              <span>${task}</span>
-              <button data-index="${index}">Delete</button>
+              <p>Title: ${task.title}</p>
+              <p>Status: ${task.completed}</p>
+              <button class="change-button" data-index="${task.id}">Change</button>
+              <button class="delete-button" data-index="${task.id}">Delete</button>
             </li>
           `)
           .join('');
