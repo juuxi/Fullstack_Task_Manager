@@ -36,10 +36,30 @@ class ApiTaskClient {
         }
         return response.data;
     }
+    async put(url, data, params) {
+        let response;
+        try {
+            response = await this.client.put(url, data, { params });
+        }
+        catch (e) {
+            throw new ApiError(e.response.status, e.response.data.detail);
+        }
+        return response.data;
+    }
     async patch(url, data, params) {
         let response;
         try {
             response = await this.client.patch(url, data, { params });
+        }
+        catch (e) {
+            throw new ApiError(e.response.status, e.response.data.detail);
+        }
+        return response.data;
+    }
+    async delete(url, params) {
+        let response;
+        try {
+            response = await this.client.delete(url, { params });
         }
         catch (e) {
             throw new ApiError(e.response.status, e.response.data.detail);
@@ -53,8 +73,10 @@ const my_config = {
 };
 const client = new ApiTaskClient(my_config);
 try {
-    //await client.post<Task>('/api/tasks/', { id: 9, title: "Clean up", completed: false}); 
-    //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" }); 
+    //await client.post<Task>('/api/tasks/', { title: "Clean up", completed: false });
+    //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" });
+    //await client.put<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
+    //await client.delete<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
     const tasks = await client.get('/api/tasks/');
     let header = document.createElement('h3');
     header.innerText = "Tasks fetched";
