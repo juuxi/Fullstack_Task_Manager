@@ -2,6 +2,7 @@ import { ApiTaskClient } from './HttpClient.js'
 import type { ApiConfig } from './HttpClient.js'
 import { ApiError } from './types.js'
 import type { Task } from './types.js'
+import { TaskList } from './TaskList.js'
 
 
 
@@ -21,11 +22,9 @@ try {
     header.innerText = "Tasks fetched";
     document.querySelector('h1')?.after(header);
     let ul = document.createElement('ul');
-    tasks.forEach(element => {
-        let li = document.createElement('li');
-        li.innerText = element.title;
-        ul.appendChild(li);
-    });
+    ul.id = 'my_ul';
+    let tl: TaskList = new TaskList('my_ul');
+    tl.render(tasks);
     header.after(ul);
 }
 catch (e) {

@@ -1,3 +1,5 @@
+import type { Task } from './types.js'
+
 export class TaskList {
     private listElement: HTMLUListElement;
 
@@ -8,5 +10,16 @@ export class TaskList {
             throw new Error(`Element with id "${containerId}" is not a valid HTMLUListElement.`);
         }
         this.listElement = element;
+    }
+
+    public render(tasks: Task[]): void {
+        this.listElement.innerHTML = tasks
+          .map((task, index) => `
+            <li>
+              <span>${task}</span>
+              <button data-index="${index}">Delete</button>
+            </li>
+          `)
+          .join('');
     }
 }
