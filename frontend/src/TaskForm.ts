@@ -64,4 +64,15 @@ export class TaskForm implements renderable {
     public get form(): HTMLFormElement {
         return this.formElement;
     }
+
+    public get data(): Record<string, string>[] {
+        let result:  Record<string, string>[] = [];
+        this.inputElements.forEach(elem => {
+            if(elem.id == 'title' && elem instanceof HTMLInputElement)
+                result.push( {'title': `${elem.value}`} );
+            if(elem.id == 'status' && elem instanceof HTMLSelectElement)
+                result.push( {'status': `${elem.value}`} );
+        });
+        return result;
+    }
 }

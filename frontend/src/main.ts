@@ -16,7 +16,15 @@ async function updateTasks(task_list: TaskList, task_form: TaskForm) {
         button.addEventListener('click', async () => {
             task_form.render();
             await waitForFormSubmit(task_form);
-            await client.patch<Task>(`/api/tasks/${button.dataset.index}/`, { title: "Do the dishes" });
+            let title = '';
+            let status: 'pending' | 'done' | 'in-progress' = 'pending';
+            task_form.data.forEach(record => {
+                if ('title' in record)
+                    title = record.title;
+                if ('status' in record && (record.status == 'pending' || record.status == 'done' || record.status == 'in-progress'))
+                    status = record.status;
+            })
+            await client.put<Task>(`/api/tasks/${button.dataset.index}/`, { title: `${title}`, completed: `${status}` });
             await updateTasks(task_list, task_form);
         });
     });
@@ -54,17 +62,25 @@ function waitForFormSubmit(task_form: TaskForm): Promise<void> {
 const client: ApiTaskClient = new ApiTaskClient(my_config);
 try {
     let header = document.createElement('h3');
-    header.innerText = "Tasks fetched";
+    header.innerText = 'Tasks fetched';
     document.querySelector('h1')?.after(header);
     let tl: TaskList = new TaskList(header);
-    //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" });
-    //await client.put<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
-    //await client.delete<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
+    //await client.patch<Task>('/api/tasks/1/', { title: 'Do the dishes' });
+    //await client.put<Task>('/api/tasks/1/', { title: 'Do the dishes PUT', completed: false });
+    //await client.delete<Task>('/api/tasks/1/', { title: 'Do the dishes PUT', completed: false });
     let plus_button = document.querySelector('.plus-button') as HTMLButtonElement;
     plus_button.addEventListener('click', async () => {
         tf.render();
         await waitForFormSubmit(tf);
-        await client.post<Task>('/api/tasks/', { title: "Clean up", completed: "pending" });
+        let title = '';
+        let status: 'pending' | 'done' | 'in-progress' = 'pending';
+        tf.data.forEach(record => {
+            if ('title' in record)
+                title = record.title;
+            if ('status' in record && (record.status == 'pending' || record.status == 'done' || record.status == 'in-progress'))
+                status = record.status;
+        })
+        await client.post<Task>('/api/tasks/', { title: `${title}`, completed: `${status}` });
         await updateTasks(tl, tf);
     });
 
