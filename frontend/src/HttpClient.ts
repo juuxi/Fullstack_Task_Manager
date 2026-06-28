@@ -11,6 +11,14 @@ export interface ApiConfig {
 export class ApiTaskClient {
     client: AxiosInstance;
 
+    private parseErrorData(data: Object) {
+        let result = '';
+        for(const key in data) {
+            result += `${key}: ${(data as any)[key]}`;
+        }
+        return result;
+    }
+
     constructor(_config: ApiConfig) {
         const config: AxiosRequestConfig = {
             baseURL: _config.baseUrl,
@@ -26,7 +34,7 @@ export class ApiTaskClient {
         try {
             response = await this.client.get<T>(url, { params });
         } catch(e: any) {
-            throw new ApiError(e.response.status, e.response.data.detail);
+            throw new ApiError(e.response.status, this.parseErrorData(e.response.data));
         }
         return response.data;
     }
@@ -35,7 +43,7 @@ export class ApiTaskClient {
         try {
             response = await this.client.post<T>(url, data, { params });
         } catch(e: any) {
-            throw new ApiError(e.response.status, e.response.data.detail);
+            throw new ApiError(e.response.status, this.parseErrorData(e.response.data));
         }
         return response.data;
     }
@@ -44,7 +52,7 @@ export class ApiTaskClient {
         try {
             response = await this.client.put<T>(url, data, { params });
         } catch(e: any) {
-            throw new ApiError(e.response.status, e.response.data.detail);
+            throw new ApiError(e.response.status, this.parseErrorData(e.response.data));
         }
         return response.data;
     }
@@ -53,7 +61,7 @@ export class ApiTaskClient {
         try {
             response = await this.client.patch<T>(url, data, { params });
         } catch(e: any) {
-            throw new ApiError(e.response.status, e.response.data.detail);
+            throw new ApiError(e.response.status, this.parseErrorData(e.response.data));
         }
         return response.data;
     }
@@ -62,7 +70,7 @@ export class ApiTaskClient {
         try {
             response = await this.client.delete<T>(url, { params });
         } catch(e: any) {
-            throw new ApiError(e.response.status, e.response.data.detail);
+            throw new ApiError(e.response.status, this.parseErrorData(e.response.data));
         }
         return response.data;
     }

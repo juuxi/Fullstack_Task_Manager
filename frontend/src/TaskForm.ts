@@ -70,7 +70,7 @@ export class TaskForm implements renderable {
         this.inputElements.forEach(elem => {
             if(elem.id == 'title' && elem instanceof HTMLInputElement)
                 result.push( {'title': `${elem.value}`} );
-            if(elem.id == 'status' && elem instanceof HTMLSelectElement)
+            else if(elem.id == 'status' && elem instanceof HTMLSelectElement)
                 result.push( {'status': `${elem.value}`} );
         });
         return result;

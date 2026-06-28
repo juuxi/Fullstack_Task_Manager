@@ -21,7 +21,7 @@ async function updateTasks(task_list: TaskList, task_form: TaskForm) {
             task_form.data.forEach(record => {
                 if ('title' in record)
                     title = record.title;
-                if ('status' in record && (record.status == 'pending' || record.status == 'done' || record.status == 'in-progress'))
+                else if ('status' in record && (record.status == 'pending' || record.status == 'done' || record.status == 'in-progress'))
                     status = record.status;
             })
             await client.put<Task>(`/api/tasks/${button.dataset.index}/`, { title: `${title}`, completed: `${status}` });
@@ -60,43 +60,45 @@ function waitForFormSubmit(task_form: TaskForm): Promise<void> {
 
 
 const client: ApiTaskClient = new ApiTaskClient(my_config);
-try {
-    let header = document.createElement('h3');
-    header.innerText = 'Tasks fetched';
-    document.querySelector('h1')?.after(header);
-    let tl: TaskList = new TaskList(header);
-    //await client.patch<Task>('/api/tasks/1/', { title: 'Do the dishes' });
-    //await client.put<Task>('/api/tasks/1/', { title: 'Do the dishes PUT', completed: false });
-    //await client.delete<Task>('/api/tasks/1/', { title: 'Do the dishes PUT', completed: false });
-    let plus_button = document.querySelector('.plus-button') as HTMLButtonElement;
-    plus_button.addEventListener('click', async () => {
-        tf.render();
-        await waitForFormSubmit(tf);
+
+let header = document.querySelector('h3') as HTMLHeadingElement;
+let task_list: TaskList = new TaskList(header);
+
+let plus_button = document.querySelector('.plus-button') as HTMLButtonElement;
+plus_button.addEventListener('click', async () => {
+    try {
+        task_form.render();
+        await waitForFormSubmit(task_form);
         let title = '';
         let status: 'pending' | 'done' | 'in-progress' = 'pending';
-        tf.data.forEach(record => {
+        task_form.data.forEach(record => {
             if ('title' in record)
                 title = record.title;
-            if ('status' in record && (record.status == 'pending' || record.status == 'done' || record.status == 'in-progress'))
+            else if ('status' in record && (record.status == 'pending' || record.status == 'done' || record.status == 'in-progress'))
                 status = record.status;
         })
         await client.post<Task>('/api/tasks/', { title: `${title}`, completed: `${status}` });
-        await updateTasks(tl, tf);
-    });
-
-    let tf: TaskForm = new TaskForm();
-
-    await updateTasks(tl, tf);
-}
-catch (e) {
-    if (e instanceof ApiError) {
-        let error_div = document.createElement('div');
-        let error_p = document.createElement('p');
-        error_p.innerText = e.message;
-        error_div.appendChild(error_p);
-        error_div.style = 'color: red';
-        document.body.appendChild(error_div);
+        await updateTasks(task_list, task_form);
     }
-    else 
-        throw e;
-}
+    catch (e) {
+        if (e instanceof Error) {
+            let error_div = document.createElement('div');
+            let error_p = document.createElement('p');
+            error_div.appendChild(error_p);
+            error_div.style = 'color: red';
+            document.body.appendChild(error_div);
+            error_p.innerText = e.message;
+            if (e instanceof ApiError) {
+                let error_code_p = document.createElement('p');
+                error_code_p.innerText = e.status.toString();
+                error_div.appendChild(error_code_p);
+            }
+        }
+        else
+            throw e;
+    }
+});
+
+let task_form: TaskForm = new TaskForm();
+
+await updateTasks(task_list, task_form);
