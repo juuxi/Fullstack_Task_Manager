@@ -3,12 +3,10 @@ import type { Task } from './types.js'
 export class TaskList {
     private listElement: HTMLUListElement;
 
-    constructor(containerId: string) {
-        const element = document.getElementById(containerId);
+    constructor(element_before: HTMLElement) {
+        let element = document.createElement('ul');
+        element_before.after(element);
 
-        if (!element || !(element instanceof HTMLUListElement)) {
-            throw new Error(`Element with id "${containerId}" is not a valid HTMLUListElement.`);
-        }
         this.listElement = element;
     }
 

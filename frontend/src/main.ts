@@ -38,10 +38,7 @@ try {
     let header = document.createElement('h3');
     header.innerText = "Tasks fetched";
     document.querySelector('h1')?.after(header);
-    let ul = document.createElement('ul');
-    ul.id = 'my_ul';
-    header.after(ul);
-    let tl: TaskList = new TaskList('my_ul');
+    let tl: TaskList = new TaskList(header);
     //await client.patch<Task>('/api/tasks/1/', { title: "Do the dishes" });
     //await client.put<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
     //await client.delete<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
