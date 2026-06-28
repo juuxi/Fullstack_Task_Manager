@@ -1,4 +1,6 @@
-export class TaskForm {
+import type { renderable } from './types.js'
+
+export class TaskForm implements renderable {
     private modalDiv: HTMLDivElement;
     private formElement: HTMLFormElement;
     private inputElements: HTMLElement[];

@@ -1,17 +1,19 @@
-import type { Task } from './types.js'
+import type { Task, renderable } from './types.js'
 
-export class TaskList {
+export class TaskList implements renderable {
     private listElement: HTMLUListElement;
+    private tasks: Task[];
 
     constructor(element_before: HTMLElement) {
         let element = document.createElement('ul');
         element_before.after(element);
 
         this.listElement = element;
+        this.tasks = [];
     }
 
-    public render(tasks: Task[]): void {
-        this.listElement.innerHTML = tasks
+    public render(): void {
+        this.listElement.innerHTML = this.tasks
           .map((task) => `
             <li>
               <p>Title: ${task.title}</p>
@@ -21,5 +23,9 @@ export class TaskList {
             </li>
           `)
           .join('');
+    }
+
+    public set task_list(tasks: Task[]) {
+        this.tasks = tasks;
     }
 }

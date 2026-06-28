@@ -11,3 +11,7 @@ export class ApiError extends Error {
         this.status = status;
     }
 }
+
+export interface renderable {
+    render(): void;
+}

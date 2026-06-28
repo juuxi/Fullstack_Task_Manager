@@ -8,7 +8,8 @@ import { TaskForm } from './TaskForm.js'
 
 async function updateTasks(task_list: TaskList, task_form: TaskForm) {
     const tasks: Task[] = await client.get<Task[]>('/api/tasks/');
-    task_list.render(tasks);
+    task_list.task_list = tasks;
+    task_list.render();
 
     let change_buttons = document.querySelectorAll<HTMLButtonElement>('.change-button');
     change_buttons.forEach(async button => {
