@@ -50,6 +50,8 @@ try {
         await client.post<Task>('/api/tasks/', { title: "Clean up", completed: "pending" });
         await updateTasks(tl);
     });
+
+    await updateTasks(tl);
 }
 catch (e) {
     if (e instanceof ApiError) {
