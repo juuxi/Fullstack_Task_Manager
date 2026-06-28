@@ -15,6 +15,7 @@ async function updateTasks(task_list: TaskList, task_form: TaskForm) {
     change_buttons.forEach(async button => {
         button.addEventListener('click', async () => {
             task_form.render();
+            await waitForFormSubmit(task_form);
             await client.patch<Task>(`/api/tasks/${button.dataset.index}/`, { title: "Do the dishes" });
             await updateTasks(task_list, task_form);
         });
@@ -36,6 +37,20 @@ const my_config: ApiConfig = {
 }
 
 
+function waitForFormSubmit(task_form: TaskForm): Promise<void> {
+    let form = task_form.form;
+    return new Promise((resolve) => {
+        const handler = (e: Event) => {
+            e.preventDefault();
+            form.removeEventListener('submit', handler);
+            task_form.hide();
+            resolve();
+        };
+        form.addEventListener('submit', handler);
+    });
+}
+
+
 const client: ApiTaskClient = new ApiTaskClient(my_config);
 try {
     let header = document.createElement('h3');
@@ -48,15 +63,12 @@ try {
     let plus_button = document.querySelector('.plus-button') as HTMLButtonElement;
     plus_button.addEventListener('click', async () => {
         tf.render();
+        await waitForFormSubmit(tf);
         await client.post<Task>('/api/tasks/', { title: "Clean up", completed: "pending" });
         await updateTasks(tl, tf);
     });
 
     let tf: TaskForm = new TaskForm();
-    let modalSaveButton = document.querySelector('.modal button[type="submit"]') as HTMLButtonElement;
-    modalSaveButton.addEventListener('click', async () => {
-        tf.hide();
-    });
 
     await updateTasks(tl, tf);
 }

@@ -60,4 +60,8 @@ export class TaskForm implements renderable {
     public hide(): void {
         this.modalDiv.classList.add('hidden');
     }
+
+    public get form(): HTMLFormElement {
+        return this.formElement;
+    }
 }
