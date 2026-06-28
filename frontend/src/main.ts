@@ -3,17 +3,19 @@ import type { ApiConfig } from './HttpClient.js'
 import { ApiError } from './types.js'
 import type { Task } from './types.js'
 import { TaskList } from './TaskList.js'
+import { TaskForm } from './TaskForm.js'
 
 
-async function updateTasks(task_list: TaskList) {
+async function updateTasks(task_list: TaskList, task_form: TaskForm) {
     const tasks: Task[] = await client.get<Task[]>('/api/tasks/');
     task_list.render(tasks);
 
     let change_buttons = document.querySelectorAll<HTMLButtonElement>('.change-button');
     change_buttons.forEach(async button => {
         button.addEventListener('click', async () => {
+            task_form.render();
             await client.patch<Task>(`/api/tasks/${button.dataset.index}/`, { title: "Do the dishes" });
-            await updateTasks(task_list);
+            await updateTasks(task_list, task_form);
         });
     });
 
@@ -21,7 +23,7 @@ async function updateTasks(task_list: TaskList) {
     delete_buttons.forEach(async button => {
         button.addEventListener('click', async () => {
             await client.delete<Task>(`/api/tasks/${button.dataset.index}/`);
-            await updateTasks(task_list);
+            await updateTasks(task_list, task_form);
         });
     });
 }
@@ -44,11 +46,18 @@ try {
     //await client.delete<Task>('/api/tasks/1/', { title: "Do the dishes PUT", completed: false });
     let plus_button = document.querySelector('.plus-button') as HTMLButtonElement;
     plus_button.addEventListener('click', async () => {
+        tf.render();
         await client.post<Task>('/api/tasks/', { title: "Clean up", completed: "pending" });
-        await updateTasks(tl);
+        await updateTasks(tl, tf);
     });
 
-    await updateTasks(tl);
+    let tf: TaskForm = new TaskForm();
+    let modalSaveButton = document.querySelector('.modal button[type="submit"]') as HTMLButtonElement;
+    modalSaveButton.addEventListener('click', async () => {
+        tf.hide();
+    });
+
+    await updateTasks(tl, tf);
 }
 catch (e) {
     if (e instanceof ApiError) {
