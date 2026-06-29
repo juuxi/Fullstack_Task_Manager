@@ -75,4 +75,17 @@ export class TaskForm implements renderable {
         });
         return result;
     }
+
+    public set data(data: Record<string, string>[]) {
+        for (let i in data) {
+            this.inputElements.forEach(elem => {
+                if(data[i] && 'title' in data[i] && elem.id == 'title' && elem instanceof HTMLInputElement) {
+                    elem.value = data[i]['title']
+                }
+                else if(data[i] && 'status' in data[i] && elem.id == 'status' && elem instanceof HTMLSelectElement) {
+                    elem.value = data[i]['status']
+                }
+            });
+        }
+    }
 }

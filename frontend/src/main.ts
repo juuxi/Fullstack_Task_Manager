@@ -6,6 +6,34 @@ import { TaskList } from './TaskList.js'
 import { TaskForm } from './TaskForm.js'
 
 
+
+function getTitle(index: string) {
+    let list_items = document.querySelectorAll('li');
+    for (const i in list_items) {
+        if (!list_items[i])
+            continue;
+        const list_item = list_items[i];
+        const btn = list_item.querySelector('button');
+        if (btn?.dataset.index == index) {
+            return list_item.querySelector('p')?.innerText.substring(6);
+        }
+    };
+}
+
+function getStatus(index: string) {
+    let list_items = document.querySelectorAll('li');
+    for (const i in list_items) {
+        if (!list_items[i])
+            continue;
+        const list_item = list_items[i];
+        const btn = list_item.querySelector('button');
+        if (btn?.dataset.index == index) {
+            return list_item.querySelectorAll('p')[1]?.innerText.substring(8);
+        }
+    };
+}
+
+
 async function updateTasks(task_list: TaskList, task_form: TaskForm) {
     const tasks: Task[] = await client.get<Task[]>('/api/tasks/');
     task_list.task_list = tasks;
@@ -14,6 +42,7 @@ async function updateTasks(task_list: TaskList, task_form: TaskForm) {
     let change_buttons = document.querySelectorAll<HTMLButtonElement>('.change-button');
     change_buttons.forEach(async button => {
         button.addEventListener('click', async () => {
+            task_form.data = [{'title': `${getTitle(button.dataset.index!)}`}, {'status': `${getStatus(button.dataset.index!)}`}]
             task_form.render();
             await waitForFormSubmit(task_form);
             let title = '';
