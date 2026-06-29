@@ -17,7 +17,27 @@
 </head>
 <body>
     <button type="button" class="plus-button" aria-label="Add task">+</button>
-    <h1>Tasks API</h1>
-    <h3>Tasks fetched</h3>
+
+    <div class="app-layout">
+        <main class="main-content">
+            <h1>Tasks API</h1>
+            <h3>Tasks fetched</h3>
+        </main>
+
+        <aside
+            class="error-panel"
+            id="error-panel"
+            aria-live="polite"
+            aria-label="Errors and notifications"
+        >
+            <header class="error-panel__header">
+                <h2 class="error-panel__title">Notifications</h2>
+            </header>
+
+            <div class="error-list" id="error-list"></div>
+
+            <p class="error-panel__empty">No issues to show.</p>
+        </aside>
+    </div>
 </body>
 </html>

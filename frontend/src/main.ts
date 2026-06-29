@@ -83,14 +83,18 @@ plus_button.addEventListener('click', async () => {
     catch (e) {
         if (e instanceof Error) {
             let error_div = document.createElement('div');
+            error_div.classList.add('error-item');
+            error_div.role = 'alert';
             let error_p = document.createElement('p');
             error_div.appendChild(error_p);
-            error_div.style = 'color: red';
-            document.body.appendChild(error_div);
+            error_p.classList.add('error-item__message');
+            document.getElementById('error-list')!.appendChild(error_div);
             error_p.innerText = e.message;
             if (e instanceof ApiError) {
                 let error_code_p = document.createElement('p');
-                error_code_p.innerText = e.status.toString();
+                error_code_p.innerText = 'Status Code: ';
+                error_code_p.innerText += e.status.toString();
+                error_code_p.classList.add('error-item__code');
                 error_div.appendChild(error_code_p);
             }
         }
